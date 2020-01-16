@@ -1,0 +1,29 @@
+plugins {
+    id 'java'
+}
+
+group 'com.autocrypt'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'com.siemens.ct.exi', name: 'exificient', version: '0.9.6'
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.8.5'
+
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.54'
+    implementation 'org.bouncycastle:bcpkix-jdk15on:1.54'
+
+    compile files('cpos_lib.jar')
+    compile files('libs/commons-io-2.4.jar')
+    compile files('libs/PTCA.jar')
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+//    compileOnly 'org.projectlombok:lombok'
+//    annotationProcessor 'org.projectlombok:lombok'
+
+}
