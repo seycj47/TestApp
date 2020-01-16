@@ -1,0 +1,9 @@
+target
+.settings
+.classpath
+.project
+.vscode
+/*.jar
+.gradle
+.idea
+.metadata

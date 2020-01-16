@@ -1,0 +1,7 @@
+<ca>
+<chain>
+./certs/subCA2.pem
+./certs/subCA1.pem
+./certs/rootCA.pem
+</chain>
+</ca>
