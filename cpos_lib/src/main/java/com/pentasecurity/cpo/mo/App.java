@@ -64,6 +64,7 @@ public final class App {
             System.out.println("6 : push charge sales");
             System.out.println("7 : Issue TLS Certificate");
             System.out.println("8 : OCSP Request");
+            System.out.println("9 : Issue OEM Provisioning Certificate");
             System.out.println("0 : exit");
             System.out.println("=====================");
             System.out.print("select command > ");
@@ -85,6 +86,8 @@ public final class App {
             	runCommandIssueTlsCertificate(br);
             } else if (command.equals("8")) {
 //            	runCommandOcspRequest(br);
+            } else if (command.equals("9")) {
+            	runCommandIssueOemProvCert(br);
             }
         }
     }
@@ -286,15 +289,24 @@ public final class App {
     }
 
     private void runCommandIssueTlsCertificate(BufferedReader br) throws Exception {
-    	System.out.println("input SECC ID > ");
-    	String seccId = br.readLine();
+    	System.out.println("input CommonName> ");
+    	String cn = br.readLine();
     	System.out.println("");
     	
-    	IssueTlsCertRequest request = new IssueTlsCertRequest(seccId);
-    	IssueTlsCertResponse response =this.v2g.issueTlsCertificate(request);
+    	IssueTlsCertRequest request = new IssueTlsCertRequest(cn);
+    	IssueTlsCertResponse response =this.v2g.issueTLSCertificate(request);
     	System.out.println(Json.instance().toJson(response, false));
     }
-    
+
+    private void runCommandIssueOemProvCert(BufferedReader br) throws  Exception {
+      System.out.println("Input PCID");
+    	String pcid = br.readLine();
+    	System.out.println("");
+    	IssueOemProvCertReq issueOemProvCertReq = new IssueOemProvCertReq(pcid);
+    	IssueOemProvCertRes issueOemProvCertRes = this.v2g.issueOemProvCert(pcid);
+    	System.out.println("******************");
+    	System.out.println(issueOemProvCertRes);
+    }
 //    private void runCommandOcspRequest(BufferedReader br) throws Exception {
 //    	System.out.println("Input Target Certificate");
 //    	String validCert = br.readLine();

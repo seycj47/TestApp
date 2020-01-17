@@ -1,7 +1,7 @@
-package com.pentasecurity.cpo.mo.model;
+package models;
 
 public class IssueTlsCertRequest {
-	private String cn;
+  private String cn;
 
   public void setCn(String cn) {
     this.cn = cn;
@@ -12,7 +12,7 @@ public class IssueTlsCertRequest {
   }
 
   public IssueTlsCertRequest(String cn) {
-		super();
-		this.cn = cn;
-	}	
+    super();
+    this.cn = cn;
+  }
 }
