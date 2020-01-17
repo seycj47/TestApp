@@ -1,20 +1,23 @@
-import Util.CertFactory;
 import Util.ExiFactory;
 import Util.MsgDigest;
 import Util.Common;
 import com.pentasecurity.cpo.mo.V2gAdapter;
-import com.pentasecurity.cpo.mo.model.IssueTlsCertRequest;
-import com.pentasecurity.cpo.mo.model.IssueTlsCertResponse;
-import com.pentasecurity.cpo.mo.model.V2gMessage;
-import com.pentasecurity.cpo.mo.model.V2gMessagePartitial;
+import com.pentasecurity.cpo.mo.model.*;
+import com.pentasecurity.cpo.mo.util.Json;
+import javafx.util.Pair;
 import message.*;
 import ocsp.OcspReqClient;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.xml.bind.JAXBElement;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.KeyStore;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.*;
 
 public class ApplicationMain {
@@ -31,6 +34,11 @@ public class ApplicationMain {
     }
 
     public static void main(String[] args) {
+      try{
+        writeCert("MIICuzCCAmCgAwIBAgIBCzAKBggqhkjOPQQDAjBBMQswCQYDVQQGEwJLUjEOMAwGA1UECgwFcGVudGExDjAMBgNVBAsMBXBlbnRhMRIwEAYDVQQDDAlPRU1TdWJDYTEwHhcNMjAwMTA2MDY0OTA3WhcNMjUwMTA2MDY0OTA3WjBBMQswCQYDVQQGEwJLUjEOMAwGA1UECgwFcGVudGExDjAMBgNVBAsMBXBlbnRhMRIwEAYDVQQDDAlPZW1TdWJDYTIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAT0IgjftC4432CyqUcUuZ8XKKuStn8y0q8wDd41cUAa5qmUISXO1LkGrer/kveEWKGf6JucSIMq4RoCQCyp51Gdo4IBRzCCAUMwHQYDVR0OBBYEFKVNKkszWu4fudcrFzMGELxxVcaeMGcGA1UdIwRgMF6AFHyvfMwZAY0YVIdcraZJdWfm6CiloUOkQTA/MQswCQYDVQQGEwJLUjEOMAwGA1UECgwFcGVudGExDjAMBgNVBAsMBXBlbnRhMRAwDgYDVQQDDAdPRU1Sb290ggEKMA4GA1UdDwEB/wQEAwIBBjASBgNVHRMBAf8ECDAGAQH/AgEAMFUGA1UdHwROMEwwSqBIoEaGRGh0dHA6Ly8xMjcuMC4wLjEvY249T1pwRlZvdFhSWHFvRkdNakg0eU5rUSxvdT1wZW50YSxvPXBlbnRhLGM9S1IuYXJsMD4GCCsGAQUFBwEBBDIwMDAuBggrBgEFBQcwAYYiaHR0cDovLzUyLjIzMS41NS44OjkwOTAvT0NTUFNlcnZlcjAKBggqhkjOPQQDAgNJADBGAiEA+tB5rG+GKzkP5bUlCoDSmMzAMDQ68FGQWvOCfHg+6pICIQDkjvEr9XLsBm4NRpsQiw0UXbjpoys1m3MaW6CdQYbuNQ==");
+      }catch (Exception e) {
+        e.printStackTrace();
+      }
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String command = "";
         ApplicationMain app = new ApplicationMain();
@@ -54,7 +62,7 @@ public class ApplicationMain {
                 } else if (command.equals("2")) {
                     app.runCommandGetCertUpdtResMsg(br);
                 } else if (command.equals("3")) {
-                    app.runCommandIssueCpoLeaf(br);
+                   // app.runCommandIssueCpoLeaf(br);
                 } else if (command.equals("4")) {
                     app.runOCSPTest();
                 } else if (command.equals("5")) {
@@ -68,17 +76,17 @@ public class ApplicationMain {
     }
 
 
-    public void runCommandIssueCpoLeaf(BufferedReader br) throws Exception {
-        System.out.println("Input CN >");
-        String cn = br.readLine();
-        if(!cn.equals("0")) {
-            IssueTlsCertResponse result = this.v2g.issueTlsCertificate(new IssueTlsCertRequest(cn));
-            String leaf = "CPO Leaf: ";
-            System.out.println(leaf);
-            leaf =  result.toString();
-            System.out.println(leaf);
-        }
-    }
+//    public void runCommandIssueCpoLeaf(BufferedReader br) throws Exception {
+//        System.out.println("Input CN >");
+//        String cn = br.readLine();
+//        if(!cn.equals("0")) {
+//            IssueTlsCertResponse result = this.v2g.issueTlsCertificate(new IssueTlsCertRequest(cn));
+//            String leaf = "CPO Leaf: ";
+//            System.out.println(leaf);
+//            leaf =  result.toString();
+//            System.out.println(leaf);
+//        }
+//    }
 
     public void runCommandGetCertInstResMsg() throws Exception {
 
@@ -176,4 +184,79 @@ public class ApplicationMain {
 
 
     }
+
+  //  === JY ===
+
+  // CPOS, CP 인증서 발급
+  public void runCommandIssueTlsCert(BufferedReader br) throws Exception {
+    System.out.println("input CommonName> ");
+    String cn = br.readLine();
+    System.out.println("");
+
+    IssueTlsCertRequest request = new IssueTlsCertRequest(cn);
+    IssueTlsCertResponse response = this.v2g.issueTLSCertificate(request);
+    writeCert(response.getCertificateData());
+    System.out.println(Json.instance().toJson(response, false));
+  }
+
+  public static void writeCert(String certificate) throws Exception {
+    final String FILE_PATH = "certFiles/";
+
+    try {
+      X509Certificate x509Certificate = getX509Cert(certificate);
+      List<Pair<String, X509Certificate>> certList = new ArrayList<>();
+      certList.add(new Pair<String, X509Certificate>(x509Certificate.getSubjectX500Principal().getName(), x509Certificate));
+      writeCertToPem(certList, FILE_PATH);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  public static X509Certificate getX509Cert(String certificate) {
+    byte[] cert = Base64.getDecoder().decode(certificate);
+
+    try {
+      CertificateFactory certFactory = CertificateFactory.getInstance("X.509", BouncyCastleProvider.PROVIDER_NAME);
+      new ByteArrayInputStream(cert);
+      return ((X509Certificate) certFactory.generateCertificate(new ByteArrayInputStream(cert)));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  public static void writeCertToPem(List<Pair<String, java.security.cert.X509Certificate>> certList, String path) throws IOException, CertificateEncodingException {
+    final String BEGIN_CERT = "-----BEGIN CERTIFICATE-----";
+    final String END_CERT = "-----END CERTIFICATE-----";
+    String ext = ".pem";
+
+    File directory = new File(path);
+    if (!directory.exists()){
+      directory.mkdir();
+    }
+
+    for(Pair<String, java.security.cert.X509Certificate> pair : certList) {
+      String tbsStr = new String(org.bouncycastle.util.encoders.Base64.encode(pair.getValue().getEncoded()));
+      StringBuilder tmp = new StringBuilder();
+//      tmp.append(X509Factory.BEGIN_CERT);
+      tmp.append(BEGIN_CERT);
+      tmp.append(System.getProperty("line.separator"));
+      tmp.append(tbsStr);
+      tmp.append(System.getProperty("line.separator"));
+      tmp.append(END_CERT);
+      Files.write(Paths.get(path+pair.getKey()+ext), tmp.toString().getBytes());
+    }
+  }
+
+  // OEM 인증서 발급
+  public void issueOemProvCert(BufferedReader br) throws Exception{
+    System.out.println("input PCID> ");
+    String pcid = br.readLine();
+    System.out.println("");
+
+    IssueOemProvCertRes response = this.v2g.issueOemProvCert(pcid);
+    writeCert(response.getProvCert());
+    System.out.println(Json.instance().toJson(response, false));
+  }
+
 }
