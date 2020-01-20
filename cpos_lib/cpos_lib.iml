@@ -23,6 +23,7 @@
     <orderEntry type="library" name="Maven: com.google.j2objc:j2objc-annotations:1.1" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.mojo:animal-sniffer-annotations:1.17" level="project" />
     <orderEntry type="library" name="Maven: ptls:ptls-custom:1.0.0" level="project" />
-    <orderEntry type="library" name="Maven: cpo:cpos_lib:1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk15on:1.64" level="project" />
+    <orderEntry type="library" name="Maven: org.bouncycastle:bcpkix-jdk15on:1.64" level="project" />
   </component>
 </module>

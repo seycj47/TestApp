@@ -69,17 +69,23 @@ public class MsgDigest {
 
     public static byte[] signSignedInfoElement(JAXBElement<SignedInfoType> signedInfoJAXB, java.security.interfaces.ECPrivateKey ecPrivateKey) throws Exception {
 
-        byte[] xmlEle = marshalToByteArray(signedInfoJAXB, SignedInfoType.class);
-        byte[] signedInfoElementExi = ExiFactory.getInstance().encodeEXI(xmlEle, true, true);
+        try {
+            byte[] xmlEle = marshalToByteArray(signedInfoJAXB, SignedInfoType.class);
+            byte[] signedInfoElementExi = ExiFactory.getInstance().encodeEXI(xmlEle, true, true);
 
-        Signature ecdsa = Signature.getInstance("SHA256withECDSA", BouncyCastleProvider.PROVIDER_NAME);
-        ecdsa.initSign(ecPrivateKey);
-        ecdsa.update(signedInfoElementExi);
+            Signature ecdsa = Signature.getInstance("SHA256withECDSA", BouncyCastleProvider.PROVIDER_NAME);
+            ecdsa.initSign(ecPrivateKey);
+            ecdsa.update(signedInfoElementExi);
+            String check1 = Utils.base64Encode(signedInfoElementExi);
 
-        byte[] signature = ecdsa.sign();
-        byte[] rawSignature = getRawSignatureFromDEREncoding(signature);
+            byte[] signature = ecdsa.sign();
+            String check2 = Utils.base64Encode(signature);
+            byte[] rawSignature = getRawSignatureFromDEREncoding(signature);
 
-        return rawSignature;
+            return rawSignature;
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     public static byte[] getRawSignatureFromDEREncoding(byte[] derEncodedSignature) throws Exception{

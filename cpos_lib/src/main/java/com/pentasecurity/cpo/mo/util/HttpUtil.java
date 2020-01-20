@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
@@ -72,6 +73,9 @@ public class HttpUtil {
                 wr.close();
 
                 rd = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
+            } else if(requestMode.equals("GET")) {
+            	rd = new BufferedReader(new InputStreamReader(((HttpURLConnection) (new URL(urlString)).openConnection()).getInputStream(), Charset.forName("UTF-8")));
+            	
             } else {
                 con.setDoOutput(false);
                 con.setRequestProperty("User-Agent", "Mozilla/5.0");

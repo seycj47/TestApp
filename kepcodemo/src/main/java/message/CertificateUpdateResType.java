@@ -46,20 +46,20 @@ public class CertificateUpdateResType
         extends BodyBaseType
 {
 
-    @XmlElement(name = "ResponseCode", required = true)
+    @XmlElement(name = "ResponseCode", required = true, namespace = "urn:iso:15118:2:2013:MsgBody")
     @XmlSchemaType(name = "string")
-    protected ResponseCodeType responseCode;
-    @XmlElement(name = "SAProvisioningCertificateChain", required = true)
+    protected String responseCode;
+    @XmlElement(name = "SAProvisioningCertificateChain", required = false, namespace = "urn:iso:15118:2:2013:MsgBody")
     protected CertificateChainType saProvisioningCertificateChain;
-    @XmlElement(name = "ContractSignatureCertChain", required = true)
+    @XmlElement(name = "ContractSignatureCertChain", required = false, namespace = "urn:iso:15118:2:2013:MsgBody")
     protected CertificateChainType contractSignatureCertChain;
-    @XmlElement(name = "ContractSignatureEncryptedPrivateKey", required = true)
+    @XmlElement(name = "ContractSignatureEncryptedPrivateKey", required = false, namespace = "urn:iso:15118:2:2013:MsgBody")
     protected ContractSignatureEncryptedPrivateKeyType contractSignatureEncryptedPrivateKey;
-    @XmlElement(name = "DHpublickey", required = true)
+    @XmlElement(name = "DHpublickey", required = false, namespace = "urn:iso:15118:2:2013:MsgBody")
     protected DiffieHellmanPublickeyType dHpublickey;
-    @XmlElement(name = "eMAID", required = true)
+    @XmlElement(name = "eMAID", required = false, namespace = "urn:iso:15118:2:2013:MsgBody")
     protected EMAIDType emaid;
-    @XmlElement(name = "RetryCounter")
+    @XmlElement(name = "RetryCounter", required = false, namespace = "urn:iso:15118:2:2013:MsgBody")
     protected Short retryCounter;
 
     /**
@@ -70,7 +70,7 @@ public class CertificateUpdateResType
      *     {@link ResponseCodeType }
      *
      */
-    public ResponseCodeType getResponseCode() {
+    public String getResponseCode() {
         return responseCode;
     }
 
@@ -82,7 +82,7 @@ public class CertificateUpdateResType
      *     {@link ResponseCodeType }
      *
      */
-    public void setResponseCode(ResponseCodeType value) {
+    public void setResponseCode(String value) {
         this.responseCode = value;
     }
 

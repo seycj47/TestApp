@@ -223,7 +223,7 @@ public class OcspReqClient {
         }
     }
 
-    public void validOcspResponse(byte[] ocspRespBytes) throws Exception {
+    public String validOcspResponse(byte[] ocspRespBytes) throws Exception {
         // Process Response
         OCSPResp ocspRespCli = new OCSPResp(ocspRespBytes);
 
@@ -273,10 +273,13 @@ public class OcspReqClient {
                             Object status = resp.getCertStatus();
                             if (status instanceof UnknownStatus) {
                                 System.out.println("[" + certID.getSerialNumber() + "] : Unknown");
+                                return "UNKNOWN";
                             } else if (status instanceof RevokedStatus) {
                                 System.out.println("[" + certID.getSerialNumber() + "] : Revoked");
+                                return "REVOKED";
                             } else {
                                 System.out.println("[" + certID.getSerialNumber() + "] : Good");
+                                return "GOOD";
                             }
                         }
                     }
@@ -286,6 +289,8 @@ public class OcspReqClient {
         else {
             System.out.println(ocspRespCli.getStatus());
         }
+
+        return "";
     }
 
     public boolean checkValidity(X509CertificateHolder[] certs) {

@@ -51,11 +51,11 @@ public class SignedInfoType {
     @XmlElement(name = "Reference", required = true, namespace = "http://www.w3.org/2000/09/xmldsig#")
     protected List<ReferenceType> references;
 
-    @XmlAttribute(name = "Id")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    @XmlID
-    @XmlSchemaType(name = "ID")
-    protected String id;
+//    @XmlAttribute(name = "Id")
+//    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+//    @XmlID
+//    @XmlSchemaType(name = "ID")
+//    protected String id;
 
     public SignedInfoType() {
         this.canonicalizationMethod = new CanonicalizationMethodType();
@@ -151,9 +151,9 @@ public class SignedInfoType {
      *     {@link String }
      *
      */
-    public String getId() {
-        return id;
-    }
+//    public String getId() {
+//        return id;
+//    }
 
     /**
      * Legt den Wert der id-Eigenschaft fest.
@@ -163,8 +163,8 @@ public class SignedInfoType {
      *     {@link String }
      *
      */
-    public void setId(String value) {
-        this.id = value;
-    }
+//    public void setId(String value) {
+//        this.id = value;
+//    }
 
 }

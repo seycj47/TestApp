@@ -5,7 +5,7 @@ import java.lang.reflect.Type;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.pentasecurity.cpo.mo.model.IssueTlsCertResponse;
+import com.pentasecurity.cpo.mo.model.IssueCpoCertResponse;
 import com.pentasecurity.cpo.mo.model.ResponseData;
 import com.pentasecurity.cpo.mo.model.TariffResult;
 
